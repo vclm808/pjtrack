@@ -31,3 +31,9 @@ date,countries,category,warning,priority,title
 2026-01-20,AE;QA;BH;IL;JO;LB;CY,control,,2,Control: January 2026
 2025-11-20,AE;QA;BH;IL;JO;LB;CY,control,,3,Control: November 2025
 2025-02-10,AE;QA;BH;IL;JO;LB;CY,control,,3,Control: February 2025
+2024-01-28,JO;IL,attack,surprise,3,Tower 22 drone attack on US troops in Jordan
+2024-04-01,IL;JO;LB;CY,strike,surprise,3,Israeli strike on Iranian consulate in Damascus
+2024-07-31,IL;JO;LB;CY,strike,surprise,3,Haniyeh killed in Tehran (weeks of expected Iranian retaliation follow)
+2024-08-25,IL;LB;CY,strike,telegraphed,3,Israeli pre-emptive strikes and Hezbollah barrage
+2024-09-23,LB;IL;CY,war,surprise,3,Israel's mass strikes across Lebanon begin
+2024-11-27,LB;IL,ceasefire,telegraphed,3,Israel-Hezbollah ceasefire
