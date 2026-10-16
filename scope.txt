@@ -1,0 +1,13 @@
+# Hosts pjtrack may contact (data sources only). Authorized by user 2026-10-16.
+opensky-network.org
+auth.opensky-network.org
+s3.opensky-network.org
+api.adsb.lol
+api.airplanes.live
+downloads.adsbexchange.com
+davidmegginson.github.io
+# adsb.lol historical archives (GitHub releases)
+api.github.com
+github.com
+objects.githubusercontent.com
+release-assets.githubusercontent.com

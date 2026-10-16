@@ -1,0 +1,33 @@
+# Events used by `python3 -m pjtrack backtest`. priority 1 is fetched first.
+# warning: telegraphed = public signals in the days before (threats, evacuations, buildup);
+#          surprise = no public warning. A departure signal before a surprise event would mean insider knowledge
+#          (or coincidence); before a telegraphed one it may just mean people read the news.
+# category=holiday rows are not events: they are confounders the report flags when they fall in a window.
+date,countries,category,warning,priority,title
+2026-02-28,AE;QA;BH;IL;JO;CY,war,telegraphed,1,US-Israel strikes on Iran begin; Iran retaliates on Gulf states
+2025-06-13,AE;QA;BH;IL;JO;CY,war,telegraphed,1,Israel strikes Iran (12-day war)
+2025-06-23,QA;AE;BH,strike,telegraphed,1,Iran strikes Al Udeid base in Qatar
+2025-09-09,QA;AE,strike,surprise,2,Israeli strike on Hamas leaders in Doha
+2024-10-01,IL;JO;LB;CY,strike,telegraphed,2,Iranian ballistic missile attack on Israel
+2024-09-17,LB;IL,attack,surprise,2,Pager and radio explosions in Lebanon
+2024-09-27,LB;IL,strike,surprise,2,Nasrallah killed in Beirut
+2024-10-26,IL;JO;AE,strike,telegraphed,3,Israeli strikes on Iran
+2024-04-13,IL;JO;LB;CY,strike,telegraphed,2,Iranian drone and missile attack on Israel
+2024-12-08,LB;JO,regime change,surprise,3,Assad government falls
+2023-10-07,IL;JO;CY,attack,surprise,3,Hamas attack on Israel
+# Confounders (dates approximate +-1 day for lunar holidays)
+2024-04-10,ALL,holiday,,,Eid al-Fitr 2024
+2024-06-16,ALL,holiday,,,Eid al-Adha 2024
+2024-10-03,IL,holiday,,,Rosh Hashanah 2024
+2024-10-12,IL,holiday,,,Yom Kippur 2024
+2025-03-30,ALL,holiday,,,Eid al-Fitr 2025
+2025-06-06,ALL,holiday,,,Eid al-Adha 2025
+2025-09-23,IL,holiday,,,Rosh Hashanah 2025
+2026-02-18,ALL,holiday,,,Ramadan 2026 begins
+2026-03-20,ALL,holiday,,,Eid al-Fitr 2026
+2023-10-07,IL,holiday,,,Simchat Torah 2023
+# Control windows: dates with no major event, same airports. The rate of "signals" here is the false-alarm rate.
+2025-05-20,AE;QA;BH;IL;JO;LB;CY,control,,2,Control: quiet late May 2025
+2026-01-20,AE;QA;BH;IL;JO;LB;CY,control,,2,Control: January 2026
+2025-11-20,AE;QA;BH;IL;JO;LB;CY,control,,3,Control: November 2025
+2025-02-10,AE;QA;BH;IL;JO;LB;CY,control,,3,Control: February 2025

@@ -1,0 +1,3 @@
+# One event per row. date = YYYY-MM-DD (UTC). countries = ISO-2 codes separated by ';' or ALL.
+# category is free text (conflict, strike, protest, summit, holiday, ...). Lines starting with # are ignored.
+date,countries,category,title
