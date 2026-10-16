@@ -25,6 +25,7 @@ BASE = range(-24, -7)    # -24..-8
 LEAD = range(-7, 0)      # -7..-1
 REACT = range(0, 4)      # 0..+3
 SIGNAL_RATIO, SIGNAL_Z = 1.3, 2.0
+NEXT_DEP_S = 72 * 3600   # max time to the next observed departure used to infer a missing destination
 
 # Airports with usable historical coverage, by country, per data source.
 OPENSKY_AIRPORTS = {
@@ -81,12 +82,36 @@ def _load(con):
         fetched["adsblol"][ap][dt.date.fromisoformat(day)] = n
     biz = {"opensky": Counter(), "adsblol": Counter()}
     legs = {"opensky": [], "adsblol": []}
-    for src, ap, arr, ts in con.execute("""SELECT f.source, f.dep_airport, f.arr_airport, f.dep_time
+    rows = con.execute("""SELECT f.source, f.icao24, f.dep_airport, f.arr_airport, f.dep_time
             FROM flights f JOIN aircraft a USING (icao24)
-            WHERE a.is_bizjet = 1 AND f.source IN ('opensky', 'adsblol') AND f.dep_airport IS NOT NULL"""):
+            WHERE a.is_bizjet = 1 AND f.source IN ('opensky', 'adsblol')
+            ORDER BY f.source, f.icao24, f.dep_time""").fetchall()
+    for i, (src, hx, ap, arr, ts) in enumerate(rows):
+        if ap is None:
+            continue
+        if arr is None and src == "adsblol":
+            arr = _next_departure(rows, i)
         biz[src][(ap, day_of(ts))] += 1
         legs[src].append(dict(dep_airport=ap, arr_airport=arr, dep_time=ts))
     return fetched, biz, legs
+
+
+def _next_departure(rows, i):
+    """Most archive legs leave receiver coverage en route (over Saudi Arabia, Iran, open sea) and
+    never show a landing. If the same aircraft's next observed leg departs from a known airport
+    within NEXT_DEP_S, it must have landed there. A next departure from the origin is ambiguous
+    (unseen round trip or a gap in the track) and stays unknown. Airborne-only segments in between
+    (first seen in flight) are skipped, but if one of them shows a landing, that is the destination."""
+    src, hx, ap, _, ts = rows[i]
+    for nsrc, nhx, nap, narr, nts in rows[i + 1:i + 4]:
+        if nsrc != src or nhx != hx or nts - ts > NEXT_DEP_S:
+            return None
+        if nap is None:
+            if narr:
+                return narr if narr != ap else None
+            continue
+        return nap if nap != ap else None
+    return None
 
 
 # Download order: one event at a time (newest first within a priority tier); within an event the

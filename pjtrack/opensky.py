@@ -72,7 +72,7 @@ def store_departures(con, airport, days, flights):
 
 
 def _spent_today(con):
-    today = dt.date.today().isoformat()
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()  # OpenSky quota resets at 00:00 UTC
     if get_meta(con, "opensky_budget_day") != today:
         set_meta(con, "opensky_budget_day", today)
         set_meta(con, "opensky_spent", 0)
