@@ -1,0 +1,29 @@
+name: airline
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: JSON list of YYYY-MM-DD days
+        required: true
+jobs:
+  day:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        day: ${{ fromJSON(inputs.days) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: python3 ci/airline_day.py ${{ matrix.day }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: air-${{ matrix.day }}
+          path: data/ind_airline.db
+          retention-days: 7
