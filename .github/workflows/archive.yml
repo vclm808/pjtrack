@@ -20,6 +20,8 @@ jobs:
         with:
           python-version: "3.14"
       - run: python3 ci/archive_day.py ${{ matrix.day }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: day-${{ matrix.day }}

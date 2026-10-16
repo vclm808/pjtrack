@@ -10,6 +10,7 @@ We stream it - nothing is written to disk - and:
 import gzip
 import io
 import json
+import os
 import re
 import tarfile
 import time
@@ -54,10 +55,16 @@ class _Chain(io.RawIOBase):
             self.resp = None
 
 
+def _auth():
+    # Unauthenticated GitHub API calls are limited to 60/hour per IP, which shared CI runners exceed.
+    tok = os.environ.get("GITHUB_TOKEN")
+    return {"Authorization": f"Bearer {tok}"} if tok else None
+
+
 def asset_urls(day):
     # Some days (e.g. 2025-05-28..06-10) were only published under a "-prod-0tmp" tag.
     for sfx in ("", "tmp"):
-        data, _ = get_json(RELEASE_API.format(y=day.year, m=day.month, d=day.day, sfx=sfx))
+        data, _ = get_json(RELEASE_API.format(y=day.year, m=day.month, d=day.day, sfx=sfx), headers=_auth())
         if data and data.get("assets"):
             return [a["browser_download_url"] for a in sorted(data["assets"], key=lambda a: a["name"])
                     if ".tar" in a["name"]]
