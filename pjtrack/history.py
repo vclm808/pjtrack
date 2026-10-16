@@ -20,7 +20,7 @@ from .config import AIRPORTS
 from .live import AirportIndex
 from .net import UA, check_scope, get_json
 
-RELEASE_API = "https://api.github.com/repos/adsblol/globe_history_{y}/releases/tags/v{y}.{m:02d}.{d:02d}-planes-readsb-prod-0"
+RELEASE_API = "https://api.github.com/repos/adsblol/globe_history_{y}/releases/tags/v{y}.{m:02d}.{d:02d}-planes-readsb-prod-0{sfx}"
 NAME_RE = re.compile(r"trace_full_([0-9a-f]{6})\.json$")
 LEG_GAP_S = 1800          # gap that starts a new leg
 DEP_RADIUS_KM = 12        # leg starting on the ground / low within this radius -> departed there
@@ -55,11 +55,13 @@ class _Chain(io.RawIOBase):
 
 
 def asset_urls(day):
-    data, _ = get_json(RELEASE_API.format(y=day.year, m=day.month, d=day.day))
-    if not data or "assets" not in data:
-        return []
-    return [a["browser_download_url"] for a in sorted(data["assets"], key=lambda a: a["name"])
-            if ".tar" in a["name"]]
+    # Some days (e.g. 2025-05-28..06-10) were only published under a "-prod-0tmp" tag.
+    for sfx in ("", "tmp"):
+        data, _ = get_json(RELEASE_API.format(y=day.year, m=day.month, d=day.day, sfx=sfx))
+        if data and data.get("assets"):
+            return [a["browser_download_url"] for a in sorted(data["assets"], key=lambda a: a["name"])
+                    if ".tar" in a["name"]]
+    return []
 
 
 def _load(raw):
